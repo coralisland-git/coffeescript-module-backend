@@ -2,7 +2,7 @@
   "name": "edgecommonconfig",
   "version": "1.0.1",
   "description": "General tools and functions for the Edge hub system",
-  "main": "index.js",
+  "main": "lib/Config.js",
   "scripts": {
     "prepublish": "coffee --compile --output lib/ src/"
   },
