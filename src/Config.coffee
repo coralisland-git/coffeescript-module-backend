@@ -9,13 +9,8 @@ winston    = require 'winston'
 exreport   = require 'coffee-exception-report'
 ninja      = require 'ninjadebug'
 chalk      = require 'chalk'
-newPromise = require './newPromise'
 
 class EdgeAppConfig
-
-    ##|
-    ##|  Export related classes for easy reference
-    @newPromise 			: newPromise
 
     devMode                 : true
     useSshTunnel            : !true
