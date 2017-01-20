@@ -12,6 +12,11 @@ chalk      = require 'chalk'
 
 class EdgeAppConfig
 
+    ##|
+    ##| TODO:  These things should be easier to change, load from environment
+    ##| or otherwise work from the command line the way trace does.
+    ##|
+
     devMode                 : true
     useSshTunnel            : !true
 
@@ -30,7 +35,7 @@ class EdgeAppConfig
     mqItemChanges           : "item-changes"
     mqRetsRawData           : "rets-raw"
 
-    ConfigPath              : [ __dirname + "/../Config/", process.env.HOME + "/Config/", __dirname ]
+    ConfigPath              : [ __dirname + "/../EdgeConfig/", process.env.HOME + "/EdigeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/" ]
     logPath                 : __dirname + "/../logs/"
     imagePath               : __dirname + "/../images/"
     importPath              : __dirname + "/../import/"
@@ -145,7 +150,7 @@ class EdgeAppConfig
             console.log "Total duration:", humanize(new Date().getTime()-@startTime.getTime())
             console.log "Application exit code=#{code}"
 
-        @setTitle null
+        @setTitle ""
         return true
 
     ##|
