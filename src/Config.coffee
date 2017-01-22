@@ -35,10 +35,10 @@ class EdgeAppConfig
     mqItemChanges           : "item-changes"
     mqRetsRawData           : "rets-raw"
 
-    ConfigPath              : [ __dirname + "/../EdgeConfig/", process.env.HOME + "/EdigeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/" ]
-    logPath                 : __dirname + "/../logs/"
-    imagePath               : __dirname + "/../images/"
-    importPath              : __dirname + "/../import/"
+    ConfigPath              : [ __dirname + "/../EdgeConfig/", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/" ]
+    logPath                 : process.env.HOME + "/EdgeData/logs/"
+    imagePath               : process.env.HOME + "/EdgeData/images/"
+    importPath              : process.env.HOME + "/EdgeData/import/"
 
     ##|
     ##|  Given a filename and path list, resolve with the full path that exists.
