@@ -16,7 +16,7 @@ access_data =
     ##| Edge primary mongo Database
 
     MongoDB:
-        url: "mongodb://sa:edge5516789@localhost:27017/admin?replicaSet=rr0"
+        url: "mongodb://user:password@localhost:27017/admin?replicaSet=rr0"
         options:
             db:
                 numberOfRetries : 5
@@ -50,12 +50,12 @@ access_data =
 
     "Watson-ToneAnalyzer" :
         "url"             : "https://gateway.watsonplatform.net/tone-analyzer/api"
-        "password"        : "eUv8rM0mKyOH"
-        "username"        : "597d3bd6-c274-4e66-8861-533325761d3f"
+        "password"        : "xxxxxxxxxx"
+        "username"        : "yyyyyyyyyy"
 
     RedshiftPG :
         user              : "sa"
-        password          : ""
+        password          : "xxxxxxxxxx"
         database          : "prop"
         host              : "rrv3.cnpns8nqpiu3.us-east-1.redshift.amazonaws.com"
         port              : 5439
@@ -64,21 +64,13 @@ access_data =
 
     elasticsearch :
         accessKeyId       : "AKIAIGXHBXLAEA4PX7HA"
-        secretAccessKey   : ""
+        secretAccessKey   : "xxxxxxxxxxxxxxxxxxxx"
         service           : 'es'
         region            : "us-east-1"
         host              : "search-rrportal-a7u25qwkomjxflicafylg32oeu.us-east-1.es.amazonaws.com"
 
-    "Amazon" :
-        ##|
-        ##|  This is the IAM User "rrportal"
-        AccessKeyID       : "AKIAIGXHBXLAEA4PX7HA"
-        SecretKey         : ""
-        Username          : "rrportal"
-
-
 ##|
-##|  Dev settings use SSH
+##|  Dev settings change some values from the base config and create a new file.
 ##|
 access_data_dev =
 
