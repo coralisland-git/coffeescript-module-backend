@@ -46,7 +46,7 @@ class EdgeAppConfig
     ##|  @param pathList [array/string] A list of one or more paths to find
     ##|  @return [string] the path and filename that was found.
     ##|
-    @FindFileInPath: (filename, pathList)->
+    FindFileInPath: (filename, pathList)->
 
         if typeof pathList == "string" then pathList = [ pathList ]
         for path in pathList
@@ -221,7 +221,7 @@ class EdgeAppConfig
             return module.exports[serverCode]
 
         if !@__credentials?
-            configFile = EdgeAppConfig.FindFileInPath "key.txt", @ConfigPath
+            configFile = @FindFileInPath "key.txt", @ConfigPath
             if !configFile?
                 console.log "Error:  Unable to find key.txt in ", @ConfigPath
                 return null
@@ -235,7 +235,7 @@ class EdgeAppConfig
             else
                 jsonTextFile = "credentials.json"
 
-            configFile = EdgeAppConfig.FindFileInPath jsonTextFile, @ConfigPath
+            configFile = @FindFileInPath jsonTextFile, @ConfigPath
             if !configFile?
                 console.log "Error:  Unable to find #{jsonTextFile} in ", @ConfigPath
                 return null
