@@ -13,3 +13,20 @@ describe "Credential management", ->
         ##|  Get the credentials for a test host
         mqHost = config.getCredentials "mqHost"
         mqHost.should.equal('amqp://127.0.0.1:5672')
+
+describe "Finding files", ->
+
+    describe "Finding files in a path list", ->
+
+        it "Should be able to find the README file", ->
+            pathList = ['./', '../']
+            filename = config.FindFileInPath "README.md", pathList
+            should.exist(filename)
+            filename.should.equal("./README.md")
+
+        it "Should be able to find the test file", ->
+            pathList = ['./', '../', './test/', './dummy/']
+            filename = config.FindFileInPath "test.coffee", pathList
+            should.exist(filename)
+            filename.should.equal("./test/test.coffee")
+
