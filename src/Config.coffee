@@ -35,7 +35,7 @@ class EdgeAppConfig
     mqItemChanges           : "item-changes"
     mqRetsRawData           : "rets-raw"
 
-    ConfigPath              : [ __dirname + "/../EdgeConfig/", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/" ]
+    ConfigPath              : [ process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
     logPath                 : process.env.HOME + "/EdgeData/logs/"
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
