@@ -6,7 +6,7 @@ jsonfile   = require 'jsonfile'
 numeral    = require 'numeral'
 os         = require 'os'
 winston    = require 'winston'
-exreport   = require 'coffee-exception-report'
+exreport   = require 'EdgeCommonExceptionReport'
 ninja      = require 'ninjadebug'
 chalk      = require 'chalk'
 
