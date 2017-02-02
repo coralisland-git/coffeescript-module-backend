@@ -12,7 +12,14 @@ describe "Credential management", ->
         ##|
         ##|  Get the credentials for a test host
         mqHost = config.getCredentials "mqHost"
-        mqHost.should.equal('amqp://127.0.0.1:5672')
+        mqHost.should.equal('amqp://localhost:5672')
+
+describe "set Credential test", ->
+    it "Should be able to get info after set credential", -> 
+        config.setCredentials "local", {url: "http://localhost:3000"}
+
+        local = config.getCredentials "local"
+        local.should.have.property('url', 'http://localhost:3000')
 
 describe "Finding files", ->
 

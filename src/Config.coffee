@@ -6,7 +6,7 @@ jsonfile   = require 'jsonfile'
 numeral    = require 'numeral'
 os         = require 'os'
 winston    = require 'winston'
-exreport   = require 'EdgeCommonExceptionReport'
+exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
 chalk      = require 'chalk'
 
@@ -244,7 +244,7 @@ class EdgeAppConfig
             hex            = JSON.parse(jsonText)
             @__credentials = engine.decrypt(hex)
 
-            # console.log "CR:", @__credentials
+            console.log "CR:", @__credentials
 
         if !serverCode?
             for varName, value of @__credentials
@@ -257,6 +257,50 @@ class EdgeAppConfig
 
         return @__credentials[serverCode]
 
+    ##|
+    ##|  Set the credentials to credentials.json if given the server and data related to server
+    ##|  So this is a shortcut that apps can use for testing.
+    ##|
+    setCredentials : (serverName, object) -> 
+        if !serverName? or !object?
+            return console.error "Please populate the server or data related to this server"
+        
+        # set key with key.txt
+        configFile = @FindFileInPath "key.txt", @ConfigPath
+        if !configFile?
+            console.log "Error:  Unable to find key.txt in ", @ConfigPath
+            return null
+
+        key    = fs.readFileSync configFile
+        key    = key.toString()
+        engine = encrypter key
+
+        # set config path
+        if @devMode
+            jsonTextFile = "credentials_dev.json"
+        else
+            jsonTextFile = "credentials.json"
+
+        configFile = @FindFileInPath jsonTextFile, @ConfigPath
+        if !configFile?
+            console.log "Error:  Unable to find #{jsonTextFile} in ", @ConfigPath
+            return null
+
+        # @__credentials is container that includes the all servers info 
+        # if @__credentials is empty
+        if !@__credentials?
+            jsonText       = fs.readFileSync configFile
+            hex            = JSON.parse(jsonText)
+            @__credentials = engine.decrypt(hex)
+        
+        # set the value 'object' with serverName in @__credentials
+        @__credentials[serverName] = object;
+
+        # encrypt the @__credentials and write the file to credentials.json
+        hex = engine.encrypt @__credentials
+        fs.writeFileSync configFile, JSON.stringify(hex) 
+
+        return
 
     ##|
     ##|  Returns a reference to a logger object
