@@ -26,7 +26,6 @@ class EdgeAppConfig
     useNinjaDebug           : true
     useExceptionReport      : true
 
-    SocketHost              : "http://" + os.hostname() + ":8001"
     WebserverPort           : 8001
 
     mqExchangePathUpdates   : "all-updates"
