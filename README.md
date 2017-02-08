@@ -52,7 +52,12 @@ key.txt file in source code control.
 
 Find a file by name given a list of one or more possible paths.  Returns null if not found
 
-    filename = config.FindFileInPath(filename, pathList)
+    filename = config.FindFileInPath(filename, pathList, returnPath)
+
+returnPath parameter is false by default. 
+If returnPath parameter is true then we can get the full path of file but without filename.
+
+for example,  ../data/test.dat returns /Users/brian/data/
 
 ### Debug / dump an object
 
