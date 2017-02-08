@@ -74,3 +74,6 @@ does the same thing except that the error is non fatal and the exception is fata
     config.reportException "What was going on", e
 
     config.reportError "What was going on", e
+
+
+
