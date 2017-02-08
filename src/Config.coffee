@@ -9,6 +9,7 @@ winston    = require 'winston'
 exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
 chalk      = require 'chalk'
+path       = require 'path'
 
 class EdgeAppConfig
 
@@ -45,17 +46,18 @@ class EdgeAppConfig
     ##|  @param pathList [array/string] A list of one or more paths to find
     ##|  @return [string] the path and filename that was found.
     ##|
-    FindFileInPath: (filename, pathList)->
+    FindFileInPath: (filename, pathList, returnPath = false)->
 
         if typeof pathList == "string" then pathList = [ pathList ]
-        for path in pathList
+        for pathName in pathList
 
             try
-                filenameTest = path + filename
-                stat = fs.statSync filenameTest
-                if stat? and stat.size
+                filenameTest = pathName + filename
+                stat = fs.statSync filenameTest            
+                if stat? and stat.size and returnPath is false
                     return filenameTest
-
+                if stat? and stat.size and returnPath is true                       
+                    return (path.dirname path.join(process.cwd(), filenameTest)) + '/'
             catch e
                 # ...
 

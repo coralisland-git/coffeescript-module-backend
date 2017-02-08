@@ -1,4 +1,5 @@
 should = require 'should'
+path   = require 'path'
 config = require '../src/Config'
 
 ##|
@@ -36,4 +37,10 @@ describe "Finding files", ->
             filename = config.FindFileInPath "test.coffee", pathList
             should.exist(filename)
             filename.should.equal("./test/test.coffee")
+        
+        it "Should be Path without filename", ->
+            pathList = ['./', '../']
+            pathName = config.FindFileInPath "README.md", pathList, true
+            pathName.should.equal(path.dirname(path.join(__dirname, '../README.md')) + '/')
 
+            
