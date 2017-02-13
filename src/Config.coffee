@@ -36,7 +36,7 @@ class EdgeAppConfig
     mqRetsRawData           : "rets-raw"
 
     ConfigPath              : [ "./Credentials/", "./", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
-    logPath                sert : process.env.HOME + "/EdgeData/logs/"
+    logPath                 : process.env.HOME + "/EdgeData/logs/"
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
 
