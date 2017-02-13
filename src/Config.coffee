@@ -59,7 +59,7 @@ class EdgeAppConfig
                 if stat? and stat.size and returnPath is true
                     ##|  test for absolute path names
                     if filenameTest.charAt(0) == '/'
-                        return path.dirname(filenameTest)
+                        return path.dirname(filenameTest) + "/"
 
                     return (path.dirname path.join(process.cwd(), filenameTest)) + '/'
             catch e
