@@ -19,7 +19,6 @@ class EdgeAppConfig
     ##|
 
     devMode                 : (process.env.DEVMODE == "true") || false
-    useSshTunnel            : !true
 
     traceEnabled            : false
     recordIncomingMessages  : false
@@ -35,7 +34,7 @@ class EdgeAppConfig
     mqItemChanges           : "item-changes"
     mqRetsRawData           : "rets-raw"
 
-    ConfigPath              : [ "./Credentials/", "./", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
+    ConfigPath              : [ "./Credentials/", "./", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgecommonconfig/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
     logPath                 : process.env.HOME + "/EdgeData/logs/"
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
@@ -74,17 +73,11 @@ class EdgeAppConfig
         this.argv = argv
 
         ##|
-        ##|  Brian:  When I'm on this machine I have a firewall in place so I needs to connect
-        ##|  only through localhost.   For this reason I use SSH Tunnel on OSX to create a Tunnel
-        ##|  from local ports to the server I want to test with
-        ##|
-        if os.hostname() == "bpollack-d2fd0b" and @devMode
-            @useSshTunnel = true
+        ##|  Put --dev on the command line to use credentials_dev.json
+        if argv.dev?
+            @devMode = true
         else
             @devMode = false
-            @useSshTunnel = false
-
-
 
         ##|
         ##|  General command line flags
