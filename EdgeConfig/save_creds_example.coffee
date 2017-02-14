@@ -16,58 +16,28 @@ access_data =
     ##| Edge primary mongo Database
 
     MongoDB:
-        url: "mongodb://user:password@localhost:27017/admin?replicaSet=rr0"
+        url: "mongodb://sa:edge5516789@dev1.protovate.com:27017/admin?readPreference=primary"
         options:
             db:
                 numberOfRetries : 5
                 native_parser   : true
-                readPreference  : ReadPreference.NEAREST
-                slaveOk         : true
-            replSet:
-                connectWithNoPrimary : true
-                slaveOk              : true
-                replicaSet           : "rr0"
-                poolSize             : 4
-                strategy             : "ping"
-                readPreference       : ReadPreference.NEAREST
-                socketOptions        :
-                    socketTimeoutMS: 60000
-                    connectTimeoutMS: 60000
             server:
                 auto_reconnect : true
                 poolSize       : 8
-                slaveOk        : true
                 strategy       : "ping"
                 socketOptions  :
                     socketTimeoutMS: 600000
                     connectTimeoutMS: 600000
 
-    redisReadHost         : "redis://@localhost"
-    redisHost             : "redis://@localhost"
+    redisReadHost         : "redis://:1d1b846a8b9c46e9e1562733cd483f19@dev1.protovate.com"
+    redisHost             : "redis://:1d1b846a8b9c46e9e1562733cd483f19@dev1.protovate.com"
 
-    mqHost                : "amqp://localhost:5672"
-    mqAdmin               : "http://sa:g1s00000j9@localhost:15674"
-
-    "Watson-ToneAnalyzer" :
-        "url"             : "https://gateway.watsonplatform.net/tone-analyzer/api"
-        "password"        : "xxxxxxxxxx"
-        "username"        : "yyyyyyyyyy"
-
-    RedshiftPG :
-        user              : "sa"
-        password          : "xxxxxxxxxx"
-        database          : "prop"
-        host              : "rrv3.cnpns8nqpiu3.us-east-1.redshift.amazonaws.com"
-        port              : 5439
-        max               : 4
-        idleTimeoutMillis : 30000
+    mqHost                : "amqp://edge:Edge000199@dev1.protovate.com:5672"
+    mqAdmin               : "http://sa:sa0000001@dev1.protovate.com:15672"
 
     elasticsearch :
-        accessKeyId       : "AKIAIGXHBXLAEA4PX7HA"
-        secretAccessKey   : "xxxxxxxxxxxxxxxxxxxx"
-        service           : 'es'
-        region            : "us-east-1"
-        host              : "search-rrportal-a7u25qwkomjxflicafylg32oeu.us-east-1.es.amazonaws.com"
+        type: "es"
+        url : "http://sa:sa0000001@dev1.protovate.com:9201/"
 
 ##|
 ##|  Dev settings change some values from the base config and create a new file.
@@ -97,15 +67,6 @@ access_data_dev =
             user     : 'southcrest'
             password : 'south999abc'
             database : 'southcrest'
-
-    RedshiftPG:
-        user              : ""
-        password          : ""
-        database          : ""
-        host              : "127.0.0.1"
-        port              : 5439
-        max               : 4
-        idleTimeoutMillis : 30000
 
     redisHost     : "redis://127.0.0.1:6379"
     redisReadHost : "redis://127.0.0.1:6379"
