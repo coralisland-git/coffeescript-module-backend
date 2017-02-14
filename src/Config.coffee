@@ -35,7 +35,7 @@ class EdgeAppConfig
     mqItemChanges           : "item-changes"
     mqRetsRawData           : "rets-raw"
 
-    ConfigPath              : [ process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
+    ConfigPath              : [ "./Credentials/", "./", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgeconfigcommon/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
     logPath                 : process.env.HOME + "/EdgeData/logs/"
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
@@ -56,7 +56,11 @@ class EdgeAppConfig
                 stat = fs.statSync filenameTest            
                 if stat? and stat.size and returnPath is false
                     return filenameTest
-                if stat? and stat.size and returnPath is true                       
+                if stat? and stat.size and returnPath is true
+                    ##|  test for absolute path names
+                    if filenameTest.charAt(0) == '/'
+                        return path.dirname(filenameTest) + "/"
+
                     return (path.dirname path.join(process.cwd(), filenameTest)) + '/'
             catch e
                 # ...

@@ -41,6 +41,7 @@ describe "Finding files", ->
         it "Should be Path without filename", ->
             pathList = ['./', '../']
             pathName = config.FindFileInPath "README.md", pathList, true
+            console.log pathName
             pathName.should.equal(path.dirname(path.join(__dirname, '../README.md')) + '/')
 
             
