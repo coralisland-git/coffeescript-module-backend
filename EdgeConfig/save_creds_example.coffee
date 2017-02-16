@@ -18,16 +18,9 @@ access_data =
     MongoDB:
         url: "mongodb://sa:edge5516789@dev1.protovate.com:27017/admin?readPreference=primary"
         options:
-            db:
-                numberOfRetries : 5
-                native_parser   : true
-            server:
-                auto_reconnect : true
-                poolSize       : 8
-                strategy       : "ping"
-                socketOptions  :
-                    socketTimeoutMS: 600000
-                    connectTimeoutMS: 600000
+            poolSize        : 16
+            socketTimeoutMS : 600000
+            connectTimeoutMS: 600000
 
     redisReadHost         : "redis://:1d1b846a8b9c46e9e1562733cd483f19@dev1.protovate.com"
     redisHost             : "redis://:1d1b846a8b9c46e9e1562733cd483f19@dev1.protovate.com"
@@ -48,16 +41,9 @@ access_data_dev =
 
         url: "mongodb://127.0.0.1:27017/admin"
         options:
-            db:
-                numberOfRetries: 5
-                native_parser:   true
-                slaveOk:         true
-            server:
-                auto_reconnect : true
-                poolSize       : 8
-                socketOptions  :
-                    socketTimeoutMS: 600000
-                    connectTimeoutMS: 600000
+            poolSize        : 8
+            socketTimeoutMS : 600000
+            connectTimeoutMS: 600000
 
     Southcrest:
         client: 'mysql'
