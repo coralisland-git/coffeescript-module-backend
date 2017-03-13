@@ -130,12 +130,16 @@ class EdgeAppConfig
         this.error     = @logger.error
         this.startTime = new Date()
 
-        process.on 'exit', @onExitFunction
+        if !require.main.__configTrackingEnabled?
 
-        process.on 'warning', (warning) =>
-            console.warn(warning.name);
-            console.warn(warning.message);
-            console.warn(warning.stack);
+            require.main.__configTrackingEnabled = true
+
+            process.on 'exit', @onExitFunction
+
+            process.on 'warning', (warning) =>
+                console.warn(warning.name);
+                console.warn(warning.message);
+                console.warn(warning.stack);
 
         @getCredentials()
 
