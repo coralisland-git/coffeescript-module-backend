@@ -46,6 +46,10 @@ This will return the JSON as defined in the encrypted credentials.json file.
 You can put credentials.json in your git for a project but don't store the
 key.txt file in source code control.
 
+Also you can set credential info.
+    
+    config.setCredentials "server", {url: "http://localhost:3000", ...}
+
 ## General helper functions
 
 ### Find if a file exists
