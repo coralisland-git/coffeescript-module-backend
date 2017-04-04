@@ -381,8 +381,16 @@ class EdgeAppConfig
             if statusAll? and statusAll.length == 1 and typeof statusAll[0] == "string"
                 status = statusAll[0]
             else
-                status = ninja.dumpVar statusAll, ""
-                status = status[0..300].replace("\n", ", ")
+                status = ""
+                for obj in statusAll
+
+                    if typeof obj == "string"
+                        status = status + obj
+                    else
+                        status = status + ninja.dumpVar obj, ""
+
+                # status = ninja.dumpVar statusAll, ""
+                # status = status[0..300].replace("\n", ", ")
 
             segmentms = this.log(status)
             str = ""
@@ -394,7 +402,7 @@ class EdgeAppConfig
             else
                 str = "[" + ninja.pad(segmentms, 14) + " ms] "
 
-            console.log "#{str} #{name} #{status}"
+            console.log "#{str} #{name} | #{status}"
 
         return data
         true
