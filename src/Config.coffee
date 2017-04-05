@@ -51,7 +51,11 @@ class EdgeAppConfig
         for pathName in pathList
 
             try
+                if !pathName? then continue
+                if pathName.charAt(pathName.length-1) != '/' then pathName += '/'
+
                 filenameTest = pathName + filename
+                # console.log "CHECKING[#{filenameTest}]"
                 stat = fs.statSync filenameTest            
                 if stat? and stat.size and returnPath is false
                     return filenameTest
