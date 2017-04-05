@@ -33,8 +33,8 @@ access_data =
         url : "http://sa:sa0000001@dev1.protovate.com:9201/"
 
     ApiServers:[
-        'http://dev1.protovate.com',
-        'http://dev1.protovate.com'
+        'http://localhost:8001',
+        'http://localhost:8001'
     ]
 
 ##|
@@ -63,8 +63,8 @@ access_data_dev =
     redisReadHost : "redis://127.0.0.1:6379"
     mqHost        : "amqp://127.0.0.1:5672"
     ApiServers:[
-        'http://dev1.protovate.com',
-        'http://dev1.protovate.com'
+        'http://localhost:8001',
+        'http://localhost:8001'
     ]
 
 ##|
