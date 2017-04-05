@@ -32,6 +32,11 @@ access_data =
         type: "es"
         url : "http://sa:sa0000001@dev1.protovate.com:9201/"
 
+    ApiServers:[
+        'http://dev1.protovate.com',
+        'http://dev1.protovate.com'
+    ]
+
 ##|
 ##|  Dev settings change some values from the base config and create a new file.
 ##|
@@ -57,6 +62,10 @@ access_data_dev =
     redisHost     : "redis://127.0.0.1:6379"
     redisReadHost : "redis://127.0.0.1:6379"
     mqHost        : "amqp://127.0.0.1:5672"
+    ApiServers:[
+        'http://dev1.protovate.com',
+        'http://dev1.protovate.com'
+    ]
 
 ##|
 ##|  Read the key file
