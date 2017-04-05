@@ -32,11 +32,6 @@ access_data =
         type: "es"
         url : "http://sa:sa0000001@dev1.protovate.com:9201/"
 
-    ApiServers:[
-        'http://localhost:8001',
-        'http://localhost:8001'
-    ]
-
 ##|
 ##|  Dev settings change some values from the base config and create a new file.
 ##|
@@ -65,6 +60,13 @@ access_data_dev =
     ApiServers:[
         'http://localhost:8001',
         'http://localhost:8001'
+    ]
+    ProxyList:[
+        'http://localhost:8081',
+        'http://localhost:8082',
+        'http://localhost:8083',
+        'http://localhost:8084',
+        'http://localhost:8085',
     ]
 
 ##|
