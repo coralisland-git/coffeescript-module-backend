@@ -27,6 +27,7 @@ class EdgeAppConfig
     useExceptionReport      : true
 
     WebserverPort           : 8001
+    WebserverSSLPort        : 8443
 
     mqExchangePathUpdates   : "all-updates"
     mqExchangeStatusUpdates : "status-updates"
