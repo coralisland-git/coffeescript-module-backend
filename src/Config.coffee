@@ -148,6 +148,15 @@ class EdgeAppConfig
 
         @getCredentials()
 
+        ##|
+        ##|  If PaperTrail is available, setup exception reporting
+        paperTrailConfig = @getCredentials("papertrail")
+        if paperTrailConfig?
+            require('winston-papertrail').Papertrail;
+            paperTrailConfig.level = 'error'
+            paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
+            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})
+
         true
 
     onExitFunction: (code)=>
@@ -288,8 +297,8 @@ class EdgeAppConfig
         if @traceEnabled then consoleLevel = "info,log,error"
 
         if !@__logs[name]?
-            @__logs[name] = new winston.Logger
-                transports: [
+
+                transportList = transports: [
                     new winston.transports.Console
                         level       : consoleLevel
                         colorize    : true
@@ -325,6 +334,16 @@ class EdgeAppConfig
                         showLevel     : false
                 ]
                 exitOnError: false
+
+                ##|
+                ##|  Support for papertrail
+                paperTrailConfig = @getCredentials("papertrail")
+                if paperTrailConfig?
+                    paperTrailConfig.level = 'error'
+                    paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
+                    transportList.transports.push paperTrailLogger
+
+                @__logs[name] = new winston.Logger
 
         return @__logs[name]
 
