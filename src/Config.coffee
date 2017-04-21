@@ -124,6 +124,16 @@ class EdgeAppConfig
 
             @mainTimer = null
 
+
+        ##|
+        ##|  If PaperTrail is available, setup exception reporting
+        paperTrailConfig = @getCredentials("papertrail")
+        if paperTrailConfig?
+            require('winston-papertrail').Papertrail;
+            paperTrailConfig.level = 'error'
+            paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
+            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})            
+
         ##|
         ##|  General error logging functions
         ##|  Are just like console.log, console.info, console.error
@@ -147,15 +157,6 @@ class EdgeAppConfig
                 console.warn(warning.stack);
 
         @getCredentials()
-
-        ##|
-        ##|  If PaperTrail is available, setup exception reporting
-        paperTrailConfig = @getCredentials("papertrail")
-        if paperTrailConfig?
-            require('winston-papertrail').Papertrail;
-            paperTrailConfig.level = 'error'
-            paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
-            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})
 
         true
 
