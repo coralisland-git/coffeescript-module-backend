@@ -40,6 +40,30 @@ class EdgeAppConfig
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
 
+    ensureExistsSync : (path) ->
+        try
+            fs.mkdirSync(path)
+        catch e
+            if e.code != 'EEXIST' then return false
+            return true
+
+        true
+
+    ##|
+    ##|  Return and verify a data path
+    getDataPath: (pathName) ->
+
+        strPath = process.env.HOME + "/EdgeData/"
+        @ensureExistsSync strPath
+        for part in pathName.split("/")
+            if part.indexOf('.') != -1
+                return strPath + part
+
+            strPath += part + "/"
+            @ensureExistsSync strPath
+
+        return strPath
+
     ##|
     ##|  Given a filename and path list, resolve with the full path that exists.
     ##|  @param filename [string] A filename to find
@@ -132,7 +156,7 @@ class EdgeAppConfig
             require('winston-papertrail').Papertrail;
             paperTrailConfig.level = 'error'
             paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
-            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})            
+            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})
 
         ##|
         ##|  General error logging functions
