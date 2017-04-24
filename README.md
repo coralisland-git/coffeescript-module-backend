@@ -52,6 +52,13 @@ Also you can set credential info.
 
 ## General helper functions
 
+### Return the path to a data file or data folder
+
+Given a name or sub name such as "output.txt" or "items/hammers" it will return a
+valid path or full filename as you send it.
+
+    getDataPath: (pathName)
+
 ### Find if a file exists
 
 Find a file by name given a list of one or more possible paths.  Returns null if not found
