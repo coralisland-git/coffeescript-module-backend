@@ -230,6 +230,8 @@ class EdgeAppConfig
         else
             process.stdout.write String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7)
             process.stdout.write String.fromCharCode(27) + "]2;" + title + String.fromCharCode(27) + '\\'
+
+        @appTitle = title
         true
 
     ##|
@@ -291,8 +293,9 @@ class EdgeAppConfig
             return
 
         if !@__credentials[serverCode]?
-            console.error "Warning: requested credentials to unknown site #{serverCode}"
-            return null
+            if serverCode != "papertrail"
+                console.error "Warning: requested credentials to unknown site #{serverCode}"
+                return null
 
         return @__credentials[serverCode]
 
@@ -323,6 +326,9 @@ class EdgeAppConfig
 
         if !@__logs[name]?
 
+                infoLogFile = @getDataPath "logs/#{name}-info.log"
+                errorLogFile = @getDataPath "logs/#{name}-error.log"
+
                 transportList = transports: [
                     new winston.transports.Console
                         level       : consoleLevel
@@ -335,7 +341,7 @@ class EdgeAppConfig
                     new winston.transports.File
                         name          : "info"
                         level         : "info"
-                        filename      : @logPath + name + "-info.log"
+                        filename      : infoLogFile
                         json          : true
                         timestamp     : true
                         maxsize       : 1024*1024*40
@@ -348,7 +354,7 @@ class EdgeAppConfig
                     new winston.transports.File
                         name          : "error"
                         level         : "error"
-                        filename      : @logPath + name + "-error.log"
+                        filename      : errorLogFile
                         json          : true
                         timestamp     : true
                         maxsize       : 1024*1024*40
@@ -364,11 +370,17 @@ class EdgeAppConfig
                 ##|  Support for papertrail
                 paperTrailConfig = @getCredentials("papertrail")
                 if paperTrailConfig?
+
+                    if !@appTitle? or @appTitle == ""
+                        @appTitle = path.basename(process.mainModule.filename)
+
                     paperTrailConfig.level = 'error'
+                    paperTrailConfig.program = @appTitle
+                    paperTrailConfig.colorize = true
                     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
                     transportList.transports.push paperTrailLogger
 
-                @__logs[name] = new winston.Logger
+                @__logs[name] = new winston.Logger(transportList)
 
         return @__logs[name]
 
