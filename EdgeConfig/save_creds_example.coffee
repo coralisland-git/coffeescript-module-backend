@@ -16,7 +16,7 @@ access_data =
     ##| Edge primary mongo Database
 
     MongoDB:
-        url: "mongodb://sa:edge5516789@dev1.protovate.com:27017/admin?readPreference=primary"
+        url: "mongodb://sa:XGv27vmxdMA8FxaQ@dev1.protovate.com:27017/admin?readPreference=primary"
         options:
             poolSize        : 16
             socketTimeoutMS : 600000
