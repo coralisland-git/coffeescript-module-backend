@@ -44,6 +44,11 @@ access_data =
         'http://localhost:8085',
     ]
 
+    InfluxDB:
+        host: "dev1.protovate.com"
+        username: "admin"
+        password: "5Ssb1ARQWo"
+
 ##|
 ##|  Dev settings change some values from the base config and create a new file.
 ##|
