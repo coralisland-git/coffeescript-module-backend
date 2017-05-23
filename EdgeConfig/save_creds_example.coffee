@@ -44,7 +44,7 @@ access_data =
         'http://localhost:8085',
     ]
 
-    InfluxDB:
+    influxdb:
         type: "influxdb"
         host: "dev1.protovate.com"
         username: "admin"
