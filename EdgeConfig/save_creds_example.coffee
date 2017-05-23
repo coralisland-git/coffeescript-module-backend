@@ -45,6 +45,7 @@ access_data =
     ]
 
     InfluxDB:
+        type: "influxdb"
         host: "dev1.protovate.com"
         username: "admin"
         password: "5Ssb1ARQWo"
