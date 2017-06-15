@@ -32,6 +32,8 @@ class EdgeAppConfig
     mqExchangePathUpdates   : "all-updates"
     mqExchangeStatusUpdates : "status-updates"
     mqItemUpdates           : "item-updates"
+    mqItemUpdatesHigh       : "item-updates-high"
+    mqItemUpdatesLow        : "item-updates-low"
     mqItemChanges           : "item-changes"
     mqRetsRawData           : "rets-raw"
 
