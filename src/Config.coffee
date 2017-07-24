@@ -324,7 +324,7 @@ class EdgeAppConfig
             @__logs = {}
 
         consoleLevel = "log"
-        if @traceEnabled then consoleLevel = "info,log,error"
+        if @traceEnabled then consoleLevel = "error"
 
         if !@__logs[name]?
 
@@ -381,17 +381,6 @@ class EdgeAppConfig
                     paperTrailConfig.colorize = true
                     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
                     transportList.transports.push paperTrailLogger
-
-                if @traceEnabled
-                    conerror = new winston.transports.Console
-                        level       : 'error'
-                        colorize    : true
-                        prettyPrint : true
-                        depth       : 4
-                        timestamp   : true
-                        showLevel   : false
-
-                    transportList.transports.push conerror
 
                 @__logs[name] = new winston.Logger(transportList)
 
