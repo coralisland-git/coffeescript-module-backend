@@ -382,6 +382,17 @@ class EdgeAppConfig
                     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
                     transportList.transports.push paperTrailLogger
 
+                if @traceEnabled
+                    conerror = new winston.transports.Console
+                        level       : 'error'
+                        colorize    : true
+                        prettyPrint : true
+                        depth       : 4
+                        timestamp   : true
+                        showLevel   : false
+
+                    transportList.transports.push conerror
+
                 @__logs[name] = new winston.Logger(transportList)
 
         return @__logs[name]
