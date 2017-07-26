@@ -328,8 +328,9 @@ class EdgeAppConfig
 
         if !@__logs[name]?
 
-                infoLogFile = @getDataPath "logs/#{name}-info.log"
-                errorLogFile = @getDataPath "logs/#{name}-error.log"
+                host = os.hostname()
+                infoLogFile = @getDataPath "logs/#{name}-#{host}-info.log"
+                errorLogFile = @getDataPath "logs/#{name}-#{host}-error.log"
 
                 transportList = transports: [
                     new winston.transports.Console
