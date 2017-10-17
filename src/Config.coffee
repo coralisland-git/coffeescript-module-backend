@@ -130,6 +130,7 @@ class EdgeAppConfig
 
             @log "Launching ", @appRunningName, " with traceEnabled: ", argv._
 
+            host = os.hostname()
             traceLogFile = @getDataPath "logs/#{@appRunningName.replace('/','_')}-#{host}-trace.log"
 
             @traceLogFile = new winston.Logger
