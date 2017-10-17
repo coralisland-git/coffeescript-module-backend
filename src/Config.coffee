@@ -130,11 +130,13 @@ class EdgeAppConfig
 
             @log "Launching ", @appRunningName, " with traceEnabled: ", argv._
 
+            traceLogFile = @getDataPath "logs/#{@appRunningName.replace('/','_')}-#{host}-trace.log"
+
             @traceLogFile = new winston.Logger
                 transports: [
                     new winston.transports.File
                         level     : "info"
-                        filename  : @logPath + @appRunningName + "-trace.log"
+                        filename  : traceLogFile
                         json      : true
                         timestamp : false
                         depth     : 4
@@ -149,7 +151,6 @@ class EdgeAppConfig
         else
 
             @mainTimer = null
-
 
         ##|
         ##|  If PaperTrail is available, setup exception reporting
