@@ -361,7 +361,7 @@ class EdgeAppConfig
                 #     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
                 #     transportList.transports.push paperTrailLogger
 
-                # @__logs[name] = new winston.Logger(transportList)
+                @__logs[name] = new winston.Logger(transportList)
 
         return @__logs[name]
 
