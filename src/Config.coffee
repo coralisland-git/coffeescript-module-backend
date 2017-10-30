@@ -8,7 +8,6 @@ os         = require 'os'
 winston    = require 'winston'
 exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
-chalk      = require 'chalk'
 path       = require 'path'
 
 class EdgeAppConfig
@@ -128,6 +127,7 @@ class EdgeAppConfig
         ##|
         if @traceEnabled
 
+            chalk = require 'chalk'
             @log "Launching ", @appRunningName, " with traceEnabled: ", argv._
 
             host = os.hostname()
@@ -153,28 +153,9 @@ class EdgeAppConfig
 
             @mainTimer = null
 
-        ##|
-        ##|  If PaperTrail is available, setup exception reporting
-        paperTrailConfig = @getCredentials("papertrail")
-        if paperTrailConfig?
-            require('winston-papertrail').Papertrail;
-            paperTrailConfig.level = 'error'
-            paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
-            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})
-
-        ##|
-        ##|  General error logging functions
-        ##|  Are just like console.log, console.info, console.error
-        ##|  Info only shows in verbose mode
-        ##|  Error shows in all modes
-        ##|  Log if for disoable code testing so it always shows but should not be in production
-        @logger        = @getLogger "app"
-        this.info      = @logger.info
-        this.error     = @logger.error
         this.startTime = new Date()
 
         if !require.main.__configTrackingEnabled?
-
             require.main.__configTrackingEnabled = true
 
             process.on 'exit', @onExitFunction
@@ -185,7 +166,6 @@ class EdgeAppConfig
                 console.warn(warning.stack);
 
         @getCredentials()
-
         true
 
     onExitFunction: (code)=>
@@ -199,15 +179,10 @@ class EdgeAppConfig
         return true
 
     ##|
-    ##|  Display an object for debugging purposes
-    ##|
-    dump : (args...)->
-        ninja.dump.apply ninja, args
-
-    ##|
     ##|  Log an internal exception
     reportException: (message, e) =>
 
+        @internalSetupLogger()
         @logger.error "Exception", { message: message, e: e }
         @reportError(message, e)
         true
@@ -242,6 +217,7 @@ class EdgeAppConfig
     ##|  Report a database error different than other errors
     reportDatabaseError : (name, action, document, e)->
 
+        @internalSetupLogger()
         @logger.error "Database error",
             name: name
             action: action
@@ -389,8 +365,50 @@ class EdgeAppConfig
 
         return @__logs[name]
 
+    ##|
+    ##|  Display an object for debugging purposes
+    ##|
+    dump : (args...)->
+        ninja.dump.apply ninja, args
+
+    ##|
+    ##|  Simple output to the screen
     log: (message...)=>
         console.log.apply null, message
+
+    ##|
+    ##|  Open the info log and record an information message
+    info: (args...)->
+
+        try
+
+            @internalSetupLogger()
+            @logger.info.apply(@logger, args)
+
+        catch ignoreException
+
+            ##|
+            ##|  Ignore writing to the error log
+            console.log "IGNORED MESSAGE:", ignoreException
+
+        true
+
+    ##|
+    ##|  Open the error log and record an error message
+    error: (args...)=>
+
+        try
+
+            @internalSetupLogger()
+            @logger.error.apply(@logger, args)
+
+        catch ignoreException
+
+            ##|
+            ##|  Ignore writing to the error log
+            console.log "IGNORED MESSAGE:", ignoreException
+
+        true
 
     status: (message...)=>
         if @mainTimer?
@@ -471,6 +489,24 @@ class EdgeAppConfig
             console.log "#{str} #{name} | #{status}"
 
         return data
+        true
+
+    internalSetupLogger: ()=>
+
+        if @logger? then return
+
+        appName = @appRunningName.replace('/','_')
+        @logger = @getLogger appName
+
+        ##|
+        ##|  If PaperTrail is available, setup exception reporting
+        paperTrailConfig = @getCredentials("papertrail")
+        if paperTrailConfig?
+            require('winston-papertrail').Papertrail;
+            paperTrailConfig.level = 'error'
+            paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
+            exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})
+
         true
 
 ##|
