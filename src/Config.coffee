@@ -347,21 +347,21 @@ class EdgeAppConfig
                 ]
                 exitOnError: false
 
-                ##|
-                ##|  Support for papertrail
-                paperTrailConfig = @getCredentials("papertrail")
-                if paperTrailConfig?
+                # ##|
+                # ##|  Support for papertrail
+                # paperTrailConfig = @getCredentials("papertrail")
+                # if paperTrailConfig?
 
-                    if !@appTitle? or @appTitle == ""
-                        @appTitle = path.basename(process.mainModule.filename)
+                #     if !@appTitle? or @appTitle == ""
+                #         @appTitle = path.basename(process.mainModule.filename)
 
-                    paperTrailConfig.level = 'error'
-                    paperTrailConfig.program = @appTitle
-                    paperTrailConfig.colorize = true
-                    paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
-                    transportList.transports.push paperTrailLogger
+                #     paperTrailConfig.level = 'error'
+                #     paperTrailConfig.program = @appTitle
+                #     paperTrailConfig.colorize = true
+                #     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
+                #     transportList.transports.push paperTrailLogger
 
-                @__logs[name] = new winston.Logger(transportList)
+                # @__logs[name] = new winston.Logger(transportList)
 
         return @__logs[name]
 
