@@ -1,6 +1,6 @@
 {
   "name": "edgecommonconfig",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "General tools and functions for the Edge hub system",
   "main": "lib/Config.js",
   "scripts": {
