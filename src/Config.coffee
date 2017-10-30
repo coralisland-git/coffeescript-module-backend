@@ -495,9 +495,6 @@ class EdgeAppConfig
 
         if @logger? then return
 
-        appName = @appRunningName.replace('/','_')
-        @logger = @getLogger appName
-
         ##|
         ##|  If PaperTrail is available, setup exception reporting
         paperTrailConfig = @getCredentials("papertrail")
@@ -506,6 +503,9 @@ class EdgeAppConfig
             paperTrailConfig.level = 'error'
             paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
             exreport.winston = new winston.Logger({ transports: [ paperTrailLogger ]})
+
+        appName = @appRunningName.replace('/','_')
+        @logger = @getLogger appName
 
         true
 
