@@ -10,6 +10,8 @@ exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
 path       = require 'path'
 
+chalk = null
+
 class EdgeAppConfig
 
     ##|
