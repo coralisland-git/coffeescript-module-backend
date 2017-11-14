@@ -363,7 +363,13 @@ class EdgeAppConfig
                 #     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
                 #     transportList.transports.push paperTrailLogger
 
-                @__logs[name] = new winston.Logger(transportList)
+                try
+
+                    @__logs[name] = new winston.Logger(transportList)
+
+                catch e
+
+                    console.log "Logger error:", e
 
         return @__logs[name]
 
@@ -413,8 +419,16 @@ class EdgeAppConfig
         true
 
     status: (message...)=>
-        if @mainTimer?
-            @mainTimer.status.apply @mainTimer, message
+
+        try
+
+            if @mainTimer?
+                @mainTimer.status.apply @mainTimer, message
+
+        catch e
+
+            console.log "Status error:", e
+            
         true
 
     ##|
