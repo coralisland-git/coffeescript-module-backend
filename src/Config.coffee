@@ -408,6 +408,11 @@ class EdgeAppConfig
         try
 
             @internalSetupLogger()
+            if process.stdout.isTTY
+                chalk = require 'chalk'
+                console.info chalk.blue("--> Error")
+                console.info chalk.red(args[0])
+
             @logger.error.apply(@logger, args)
 
         catch ignoreException
