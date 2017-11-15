@@ -202,7 +202,7 @@ class EdgeAppConfig
 
     ##|
     ##| Change the terminal title in iTerm2 and Byobu
-    setTitle : (title) ->
+    setTitle : (title)=>
         if not Boolean(process.stdout.isTTY) then return
 
         if title == null
@@ -285,7 +285,7 @@ class EdgeAppConfig
     ##|  Set the credentials to credentials.json if given the server and data related to server
     ##|  So this is a shortcut that apps can use for testing.
     ##|
-    setCredentials : (serverName, object) ->
+    setCredentials : (serverName, object)=>
 
         ##| load it so it loads the main config file
         @getCredentials(serverName)
@@ -351,7 +351,7 @@ class EdgeAppConfig
     ##|
     ##|  Setup winston loggin and transports for local files
     ##|
-    internalGetLoggerFiles: (name)->
+    internalGetLoggerFiles: (name)=>
 
         host         = os.hostname()
         infoLogFile  = @getDataPath "logs/#{name}-#{host}-info.log"
@@ -409,7 +409,7 @@ class EdgeAppConfig
     ##|  Returns a reference to a logger object
     ##|  given a specific name which is cached across multiple calls.
     ##|
-    getLogger : (name)->
+    getLogger : (name)=>
 
         if !@__logs?
             @__logs = {}
