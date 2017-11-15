@@ -87,4 +87,17 @@ does the same thing except that the error is non fatal and the exception is fata
     config.reportError "What was going on", e
 
 
+# Logging Options
+
+## Logz.io Support
+
+Define logzio in your credentials to have Winston logging done here instead of local files
+
+    "logzio" : "UEdAAYEoZKAHwFiZzLrruuoIZiqedhqa"
+
+## Support for PaperTrail
+
+If you have a config with papertrail.com credentials this will be used for logging errors only.
+
+
 
