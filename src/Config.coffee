@@ -219,7 +219,7 @@ class EdgeAppConfig
     ##|  Report a database error different than other errors
     reportDatabaseError : (name, action, document, e)->
 
-        @internalSetupLogger()
+        @logSetupLogger()
         @logger.error "Database error",
             name: name
             action: action
@@ -275,9 +275,8 @@ class EdgeAppConfig
             return
 
         if !@__credentials[serverCode]?
-            if serverCode != "papertrail"
-                console.error "Warning: requested credentials to unknown site #{serverCode}"
-                return null
+            # console.error "Warning: requested credentials to unknown site #{serverCode}"
+            return null
 
         return @__credentials[serverCode]
 
