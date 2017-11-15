@@ -1,6 +1,6 @@
 {
   "name": "edgecommonconfig",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "description": "General tools and functions for the Edge hub system",
   "main": "lib/Config.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "should": "^11.1.2",
     "tty": "^1.0.1",
     "winston": "^2.3.0",
+    "winston-logzio": "^1.0.3",
     "winston-papertrail": "^1.0.4",
     "yargs": "^6.6.0"
   }
