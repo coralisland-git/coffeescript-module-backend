@@ -320,6 +320,7 @@ class EdgeAppConfig
                 new logzioWinstonTransport
                     token: logzio
                     level: "error"
+                    name: name
             ]
             exitOnError: false
 
