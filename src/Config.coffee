@@ -203,7 +203,7 @@ class EdgeAppConfig
 
     ##|
     ##| Change the terminal title in iTerm2 and Byobu
-    setTitle : (title) ->
+    setTitle : (title)=>
         if not Boolean(process.stdout.isTTY) then return
 
         if title == null
@@ -220,7 +220,7 @@ class EdgeAppConfig
     ##|  Report a database error different than other errors
     reportDatabaseError : (name, action, document, e)->
 
-        @internalSetupLogger()
+        @logSetupLogger()
         @logger.error "Database error",
             name: name
             action: action
@@ -295,9 +295,8 @@ class EdgeAppConfig
             return
 
         if !@__credentials[serverCode]?
-            if serverCode != "papertrail"
-                console.error "Warning: requested credentials to unknown site #{serverCode}"
-                return null
+            # console.error "Warning: requested credentials to unknown site #{serverCode}"
+            return null
 
         return @__credentials[serverCode]
 
@@ -305,7 +304,7 @@ class EdgeAppConfig
     ##|  Set the credentials to credentials.json if given the server and data related to server
     ##|  So this is a shortcut that apps can use for testing.
     ##|
-    setCredentials : (serverName, object) ->
+    setCredentials : (serverName, object)=>
 
         ##| load it so it loads the main config file
         @getCredentials(serverName)
@@ -315,24 +314,71 @@ class EdgeAppConfig
         return
 
     ##|
-    ##|  Returns a reference to a logger object
-    ##|  given a specific name which is cached across multiple calls.
-    ##|
-    getLogger : (name)->
+    ##|  Setup winston logs using Logz.io
+    ##|  https://github.com/logzio/winston-logzio
+    internalGetLoggerLogz: (name)=>
 
-        if !@__logs?
-            @__logs = {}
+        @status "Setting up Logz.io for logging"
+        logzio = @getCredentials("logzio")
+
+        logzioWinstonTransport = require('winston-logzio')
 
         consoleLevel = "log"
         if @traceEnabled then consoleLevel = "error"
 
-        if !@__logs[name]?
+        transportList =
+            transports: [
+                new winston.transports.Console
+                    level       : consoleLevel
+                    colorize    : true
+                    prettyPrint : true
+                    depth       : 4
+                    timestamp   : true
+                    showLevel   : false
+            ,
+                new logzioWinstonTransport
+                    token: logzio
+                    level: "error"
+                    name: name
+            ]
+            exitOnError: false
 
-                host = os.hostname()
-                infoLogFile = @getDataPath "logs/#{name}-#{host}-info.log"
-                errorLogFile = @getDataPath "logs/#{name}-#{host}-error.log"
+        @__logs[name] = new winston.Logger(transportList)
+        true
 
-                transportList = transports: [
+    ##|
+    ##| Setup winston logs using Papertrail
+    internalGetLoggerPapertrail: (name)=>
+
+        # ##|
+        # ##|  Support for papertrail
+        # paperTrailConfig = @getCredentials("papertrail")
+        # if paperTrailConfig?
+
+        #     if !@appTitle? or @appTitle == ""
+        #         @appTitle = path.basename(process.mainModule.filename)
+
+        #     paperTrailConfig.level = 'error'
+        #     paperTrailConfig.program = @appTitle
+        #     paperTrailConfig.colorize = true
+        #     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
+        #     transportList.transports.push paperTrailLogger
+
+        true
+
+    ##|
+    ##|  Setup winston loggin and transports for local files
+    ##|
+    internalGetLoggerFiles: (name)=>
+
+        host         = os.hostname()
+        infoLogFile  = @getDataPath "logs/#{name}-#{host}-info.log"
+        errorLogFile = @getDataPath "logs/#{name}-#{host}-error.log"
+
+        try
+
+            transportList =
+                transports: [
                     new winston.transports.Console
                         level       : consoleLevel
                         colorize    : true
@@ -369,27 +415,38 @@ class EdgeAppConfig
                 ]
                 exitOnError: false
 
-                # ##|
-                # ##|  Support for papertrail
-                # paperTrailConfig = @getCredentials("papertrail")
-                # if paperTrailConfig?
+            @__logs[name] = new winston.Logger(transportList)
 
-                #     if !@appTitle? or @appTitle == ""
-                #         @appTitle = path.basename(process.mainModule.filename)
+        catch e
 
-                #     paperTrailConfig.level = 'error'
-                #     paperTrailConfig.program = @appTitle
-                #     paperTrailConfig.colorize = true
-                #     paperTrailLogger = new winston.transports.Papertrail(paperTrailConfig)
-                #     transportList.transports.push paperTrailLogger
+            console.log "Logger error:", e
 
-                try
+        true
 
-                    @__logs[name] = new winston.Logger(transportList)
+    ##|
+    ##|  Returns a reference to a logger object
+    ##|  given a specific name which is cached across multiple calls.
+    ##|
+    getLogger : (name)=>
 
-                catch e
+        if !@__logs?
+            @__logs = {}
 
-                    console.log "Logger error:", e
+        consoleLevel = "log"
+        if @traceEnabled then consoleLevel = "error"
+
+        if !@__logs[name]?
+            ##|
+            ##| Setup logging
+            logzio = @getCredentials("logzio")
+            paperTrailConfig = @getCredentials("papertrail")
+
+            if logzio?
+                @internalGetLoggerLogz(name)
+            else if paperTrailConfig?
+                @internalGetLoggerPapertrail(name)
+            else
+                @internalGetLoggerFiles(name)
 
         return @__logs[name]
 
@@ -428,11 +485,6 @@ class EdgeAppConfig
         try
 
             @internalSetupLogger()
-            if process.stdout.isTTY
-                chalk = require 'chalk'
-                console.info chalk.blue("--> Error")
-                console.info chalk.red(args[0])
-
             @logger.error.apply(@logger, args)
 
         catch ignoreException
@@ -453,7 +505,7 @@ class EdgeAppConfig
         catch e
 
             console.log "Status error:", e
-            
+
         true
 
     ##|
