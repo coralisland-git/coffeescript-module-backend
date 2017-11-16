@@ -39,6 +39,7 @@ class EdgeAppConfig
     mqRetsRawData           : "rets-raw"
 
     ConfigPath              : [ "./Credentials/", "./", process.env.HOME + "/EdgeConfig/", __dirname, __dirname + "/node_modules/edgecommonconfig/EdgeConfig/", __dirname + "/../EdgeConfig/" ]
+    CredentialPath          : ["/tmp/", process.env.tmp]
     logPath                 : process.env.HOME + "/EdgeData/logs/"
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
@@ -250,15 +251,34 @@ class EdgeAppConfig
             if !configFile?
                 console.log "Error:  Unable to find key.txt in ", @ConfigPath
                 return null
+            
+            ## first step EDGE_KEY is set?
+            if !process.env.EDGE_KEY? or process.env.EDGE_KEY == ''
+                console.log "Error:  EDGE_KEY env variable is not available. Please Set EDGE_KEY env variable"
+                return null
 
+            ## second step key file is set?
             key    = fs.readFileSync configFile
             key    = key.toString()
             engine = encrypter key
 
-            if @devMode
-                jsonTextFile = "credentials_dev.json"
-            else
-                jsonTextFile = "credentials.json"
+            jsonTextFile = "credentials_" + process.env.EDGE_KEY + ".json"
+            ## fourth step
+
+            configFile = @FindFileInPath jsonTextFile, @CredentialPath
+            if !configFile?
+                ## fifth step download from gitlab file raw api
+
+                ## download and save to tmp
+                ## read path
+                configFile = @FindFileInPath jsonTextFile, @CredentialPath
+
+
+            ## old code
+            # if @devMode
+            #     jsonTextFile = "credentials_dev.json"
+            # else
+            #     jsonTextFile = "credentials.json"
 
             configFile = @FindFileInPath jsonTextFile, @ConfigPath
             if !configFile?
