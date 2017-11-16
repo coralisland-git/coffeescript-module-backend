@@ -10,6 +10,7 @@ exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
 path       = require 'path'
 
+EdgeRequest = require 'edgecommonrequest'
 chalk = null
 
 class EdgeAppConfig
@@ -43,6 +44,10 @@ class EdgeAppConfig
     logPath                 : process.env.HOME + "/EdgeData/logs/"
     imagePath               : process.env.HOME + "/EdgeData/images/"
     importPath              : process.env.HOME + "/EdgeData/import/"
+
+    PrivateToken            : "8V8nPmPjvvPTF7C9BJki"
+    ProjectId               : 19
+    FilePathInGit           : "config_files/"
 
     ensureExistsSync : (path) ->
         try
@@ -100,6 +105,10 @@ class EdgeAppConfig
         return null
 
     constructor: ()->
+
+        ##|
+        ##| initialize request
+        @request = new EdgeRequest()
 
         ##|
         ##|  Expose app args
@@ -268,10 +277,15 @@ class EdgeAppConfig
             configFile = @FindFileInPath jsonTextFile, @CredentialPath
             if !configFile?
                 ## fifth step download from gitlab file raw api
+                getFileApi = "gitlab.protovate.com/api/v4/projects/#{@ProjectId}/repository/files/#{@FilePathInGit}/#{process.env.EDGE_KEY}.json?ref=master"
+                request.addHeader('PRIVATE-TOKEN', @PrivateToken)
+                keyCredentialObject = yield request.doGetLink getFileApi, {}
+                content = new Buffer(keyCredentialObject.content, 'base64').toString('ascii')
 
                 ## download and save to tmp
-                ## read path
-                configFile = @FindFileInPath jsonTextFile, @CredentialPath
+                fs.writeFileSync(@CredentialPath + jsonTextFile, content)
+            ## read path
+            configFile = @FindFileInPath jsonTextFile, @CredentialPath
 
 
             ## old code
@@ -280,7 +294,7 @@ class EdgeAppConfig
             # else
             #     jsonTextFile = "credentials.json"
 
-            configFile = @FindFileInPath jsonTextFile, @ConfigPath
+            # configFile = @FindFileInPath jsonTextFile, @ConfigPath
             if !configFile?
                 console.log "Error:  Unable to find #{jsonTextFile} in ", @ConfigPath
                 return null
