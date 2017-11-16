@@ -323,7 +323,6 @@ class EdgeAppConfig
             ]
             exitOnError: false
 
-        console.log "Adding LOGGER:", transportList
         @__logs[name] = new winston.Logger(transportList)
         true
 
