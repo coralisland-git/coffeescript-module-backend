@@ -380,6 +380,9 @@ class EdgeAppConfig
         infoLogFile  = @getDataPath "logs/#{name}-#{host}-info.log"
         errorLogFile = @getDataPath "logs/#{name}-#{host}-error.log"
 
+        consoleLevel = "log"
+        if @traceEnabled then consoleLevel = "error"
+
         try
 
             transportList =
