@@ -9,8 +9,8 @@ winston    = require 'winston'
 exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
 path       = require 'path'
+syncexec   = require 'sync-exec'
 
-EdgeRequest = require 'edgecommonrequest'
 chalk = null
 
 class EdgeAppConfig
@@ -74,6 +74,14 @@ class EdgeAppConfig
         return strPath
 
     ##|
+    ##|  Return and verify a credential path
+    getCredentialPath: () ->
+        osType = os.type()
+        if  /^window/i.test osType
+            return @CredentialPath[1]
+        return @CredentialPath[0]
+
+    ##|
     ##|  Given a filename and path list, resolve with the full path that exists.
     ##|  @param filename [string] A filename to find
     ##|  @param pathList [array/string] A list of one or more paths to find
@@ -105,10 +113,6 @@ class EdgeAppConfig
         return null
 
     constructor: ()->
-
-        ##|
-        ##| initialize request
-        @request = new EdgeRequest()
 
         ##|
         ##|  Expose app args
@@ -251,7 +255,6 @@ class EdgeAppConfig
     ##|  Note: the key.txt file should not be stored in the repo.
     ##|
     getCredentials : (serverCode) =>
-
         if serverCode? and module.exports[serverCode]?
             return module.exports[serverCode]
 
@@ -261,40 +264,28 @@ class EdgeAppConfig
                 console.log "Error:  Unable to find key.txt in ", @ConfigPath
                 return null
             
-            ## first step EDGE_KEY is set?
             if !process.env.EDGE_KEY? or process.env.EDGE_KEY == ''
                 console.log "Error:  EDGE_KEY env variable is not available. Please Set EDGE_KEY env variable"
                 return null
 
-            ## second step key file is set?
             key    = fs.readFileSync configFile
             key    = key.toString()
             engine = encrypter key
 
             jsonTextFile = "credentials_" + process.env.EDGE_KEY + ".json"
-            ## fourth step
-
             configFile = @FindFileInPath jsonTextFile, @CredentialPath
+
             if !configFile?
-                ## fifth step download from gitlab file raw api
-                getFileApi = "gitlab.protovate.com/api/v4/projects/#{@ProjectId}/repository/files/#{@FilePathInGit}/#{process.env.EDGE_KEY}.json?ref=master"
-                request.addHeader('PRIVATE-TOKEN', @PrivateToken)
-                keyCredentialObject = yield request.doGetLink getFileApi, {}
-                content = new Buffer(keyCredentialObject.content, 'base64').toString('ascii')
+                curl_cmd = "curl -XGET -H 'PRIVATE-TOKEN:#{@PrivateToken}' 'http://gitlab.protovate.com/api/v4/projects/#{@ProjectId}/repository/files/#{@FilePathInGit}#{process.env.EDGE_KEY}.json?ref=master'"
+                keyCredentialObject = syncexec(curl_cmd)
+                content = new Buffer(JSON.parse(keyCredentialObject.stdout).content, 'base64').toString('ascii')
+                fs.writeFileSync @getCredentialPath() + jsonTextFile, content
+                setTimeout =>
+                    fs.unlinkSync @getCredentialPath() + jsonTextFile
+                , 300000
 
-                ## download and save to tmp
-                fs.writeFileSync(@CredentialPath + jsonTextFile, content)
-            ## read path
             configFile = @FindFileInPath jsonTextFile, @CredentialPath
 
-
-            ## old code
-            # if @devMode
-            #     jsonTextFile = "credentials_dev.json"
-            # else
-            #     jsonTextFile = "credentials.json"
-
-            # configFile = @FindFileInPath jsonTextFile, @ConfigPath
             if !configFile?
                 console.log "Error:  Unable to find #{jsonTextFile} in ", @ConfigPath
                 return null
@@ -302,7 +293,7 @@ class EdgeAppConfig
             jsonText       = fs.readFileSync configFile
             hex            = JSON.parse(jsonText)
             @__credentials = engine.decrypt(hex)
-
+            
         if !serverCode?
             for varName, value of @__credentials
                 this[varName] = value
