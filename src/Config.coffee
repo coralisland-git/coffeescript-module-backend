@@ -425,8 +425,9 @@ class EdgeAppConfig
                 @internalGetLoggerLogz(name)
             else if paperTrailConfig?
                 @internalGetLoggerPapertrail(name)
-            else
-                @internalGetLoggerFiles(name)
+
+        if !@__logs[name]?
+            @internalGetLoggerFiles(name)
 
         return @__logs[name]
 
