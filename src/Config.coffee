@@ -9,7 +9,6 @@ winston    = require 'winston'
 exreport   = require 'edgecommonexceptionreport'
 ninja      = require 'ninjadebug'
 path       = require 'path'
-syncexec   = require 'sync-exec'
 
 chalk = null
 
@@ -259,41 +258,54 @@ class EdgeAppConfig
             return module.exports[serverCode]
 
         if !@__credentials?
-            configFile = @FindFileInPath "key.txt", @ConfigPath
-            if !configFile?
-                console.log "Error:  Unable to find key.txt in ", @ConfigPath
-                return null
-            
-            if !process.env.EDGE_KEY? or process.env.EDGE_KEY == ''
-                console.log "Error:  EDGE_KEY env variable is not available. Please Set EDGE_KEY env variable"
-                return null
 
-            key    = fs.readFileSync configFile
-            key    = key.toString()
-            engine = encrypter key
+            if process.env.EDGE_KEY? and process.env.EDGE_KEY != ''
 
-            jsonTextFile = "credentials_" + process.env.EDGE_KEY + ".json"
-            configFile = @FindFileInPath jsonTextFile, @CredentialPath
+                console.log "Support for EDGE_KEY Disabled"
+                return false
 
-            if !configFile?
-                curl_cmd = "curl -XGET -H 'PRIVATE-TOKEN:#{@PrivateToken}' 'http://gitlab.protovate.com/api/v4/projects/#{@ProjectId}/repository/files/#{@FilePathInGit}#{process.env.EDGE_KEY}.json?ref=master'"
-                keyCredentialObject = syncexec(curl_cmd)
-                content = new Buffer(JSON.parse(keyCredentialObject.stdout).content, 'base64').toString('ascii')
-                fs.writeFileSync @getCredentialPath() + jsonTextFile, content
-                setTimeout =>
-                    fs.unlinkSync @getCredentialPath() + jsonTextFile
-                , 300000
+                # key    = fs.readFileSync configFile
+                # key    = key.toString()
+                # engine = encrypter key
 
-            configFile = @FindFileInPath jsonTextFile, @CredentialPath
+                # jsonTextFile = "credentials_" + process.env.EDGE_KEY + ".json"
+                # configFile = @FindFileInPath jsonTextFile, @CredentialPath
 
-            if !configFile?
-                console.log "Error:  Unable to find #{jsonTextFile} in ", @ConfigPath
-                return null
+                # if !configFile?
+                #     curl_cmd = "curl -XGET -H 'PRIVATE-TOKEN:#{@PrivateToken}' 'http://gitlab.protovate.com/api/v4/projects/#{@ProjectId}/repository/files/#{@FilePathInGit}#{process.env.EDGE_KEY}.json?ref=master'"
+                #     keyCredentialObject = syncexec(curl_cmd)
+                #     content = new Buffer(JSON.parse(keyCredentialObject.stdout).content, 'base64').toString('ascii')
+                #     fs.writeFileSync @getCredentialPath() + jsonTextFile, content
+                #     setTimeout =>
+                #         fs.unlinkSync @getCredentialPath() + jsonTextFile
+                #     , 300000
 
-            jsonText       = fs.readFileSync configFile
-            hex            = JSON.parse(jsonText)
-            @__credentials = engine.decrypt(hex)
-            
+            else
+
+                ##|
+                ##|  First locate key.txt
+                configFile = @FindFileInPath "key.txt", @ConfigPath
+                if !configFile?
+                    console.log "Error:  Unable to find key.txt in ", @ConfigPath
+                    return null
+
+                key    = fs.readFileSync configFile
+                key    = key.toString()
+                engine = encrypter key
+
+                ##|
+                ##| Classic method to use ~/EdgeConfig/credentials.json
+                jsonTextFile = "credentials.json"
+                configFile = @FindFileInPath jsonTextFile, @ConfigPath
+
+                if !configFile?
+                    console.log "Error:  Unable to find #{jsonTextFile} in ", @ConfigPath
+                    return null
+
+                jsonText       = fs.readFileSync configFile
+                hex            = JSON.parse(jsonText)
+                @__credentials = engine.decrypt(hex)
+
         if !serverCode?
             for varName, value of @__credentials
                 this[varName] = value
